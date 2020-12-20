@@ -27,3 +27,7 @@ This code is in completion of the final assignment as specified above. It is a d
 3. Once a new entry has been created, refresh the page to show the updated entry with the new ID Number
 4. You can update the database entries by hitting the `Update` button that appears alongside an entry. Make any changes on the form and hit `Update` to update the database entry. If you wish to cancel an updatge, just hit the `cancel` button at the bottom of the form. It isn't necessary to refresh the page after an update.
 5. You can also delete an entry. BE WARNED - no error message will appear before deletion!
+
+# Troubleshooting
+- If you get a webpage error message, make sure your server is running. 
+- If the table doesn't populate, or you're unable to make changes to the table, make sure that the credentials for accessing SQL have been updated properly in the `dbconfig.py` file. If you don't see a `dbconfig.py` file, see point 1 in Setup above.
