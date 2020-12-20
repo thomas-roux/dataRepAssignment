@@ -14,7 +14,8 @@ This code is in completion of the final assignment as specified above. It is a d
 # Setup
 1. Before running `filmServer.py`, you need to set up the `dbconfig.py` file. The basic template can be found in the `dbcongfigtemplate.py` file. Change the `mysql` object to contain the necessary details specific to your SQL server. Then save the file as `dbconfig.py` in the same folder as the other files.
 2. You will need to create the tables for the database. This is best done by going into your SQL database and creating the tables there. The full SQL code for both tables (there is a film and series table), can be found in the `initdb.sql` file. Copy and paste each table code in turn into SQL. Make sure not to include the comment section
-3. You're all set to go.
+3. Make sure that all files are downloaded into the same folder.
+4. You're good to go
 
 # Running the server
 1. Start by running `filmServer.py` on the command line: `python filmServer.py`
