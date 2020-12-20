@@ -1,5 +1,5 @@
 # dataRepAssignment
-This is the final assignment for Module 52957 "Data representation and Querying", GMIT Higher Diploma in Computer Science. The whole project contains 5 program files and a .gitignore file. In addition, there is a standard MIT Licence and this readme.md file.
+This is the final assignment for Module 52957 "Data representation and Querying", GMIT Higher Diploma in Computer Science. The whole project contains 5 program files, a `requirements.txt` containing the virtual environment requirements for the server, and a .gitignore file. In addition, there is a standard MIT Licence and this readme.md file.
 
 # Contents of code files
 - `dbconfigtemplate.py` contains the user details for the SQL server in a python object
