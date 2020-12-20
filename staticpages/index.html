@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Film and Series Library</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <style>
+            /*Sets heading 1 to center*/
+            h1 {text-align: center;}
+            
+            /*Sets the style of edit and create buttons*/
+            .button {
+                    color: white;
+                    background-color: blue;
+                    font-size: 15px;
+                }
+
+            /*Sets the style for all header classes*/    
+            .header {
+                    border: thin solid black;  
+                    background-color: lightgray;
+                    width: 100%;
+                    text-align: center;
+                }
+
+            /*Sets the style for all text within the body, with defaults if the browser doesn't support verdana*/
+            body {
+                font-family: verdana, arial, 'Times New Roman';
+                }
+
+            /*Sets line space for all paragraphs to 1.5*/
+            p {
+                line-height: 1.5;
+                }
+
+            /*Sets the style of the main division for each page*/
+            .main {
+                padding: 30px;
+                border: thin solid black;
+                background-color: lightsteelblue;
+                overflow: auto;
+            }
+
+            /*Sets the style for content divisions on webpage*/
+            .content {
+                border: thin solid lightslategray;
+                padding: 20px;
+                background-color: lightblue;
+            }
+
+            /*Spacer division to seperate divisions on webpage*/
+            .spacer {
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <!--Main body-->
+    <body class="main">
+        <div class="content">
+            <h1><u>Welcome!</u></h1>
+            <p>
+                Welcome to an elementary media library for storing all your films and series on an SQL database. Each entry is update-able
+                and delete-able without having to exit the server. Just make sure to reload the page after each new entry.
+            </p>
+        </div>
+        <div id="create-edit" style="display:none">
+            <h2>Create and Edit Database Entry</h2>
+            <table id="createUpdateForm">
+                <tr>
+                    <td>id</td>
+                    <td><input type="number" name="id" id="idInput" disabled=true></td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td><input type="text" name="Title"></td>
+                </tr>
+                <tr>
+                    <td>Year</td>
+                    <td><input type="number" name="Year"></td>
+                </tr>
+                <tr>  
+                    <td>Genre</td>
+                    <td><input type="text" name="Genre"></td>
+                </tr>
+                <tr>
+                    <td>Director</td>
+                    <td><input type="text" name="Director"></td>
+                </tr>
+                <tr>    
+                    <td>Language</td>
+                    <td><input type="text" name="Language"></td>
+                </tr>
+                <tr>    
+                    <td>Runtime</td>
+                    <td><input type="number" name="Runtime"></td>
+                </tr>
+                <tr>    
+                    <td>IFCO</td>
+                    <td><input type="text" name="IFCO"></td>
+                </tr>
+                <tr>    
+                    <td></td>
+                    <td>
+                        <button class="button" id="create-button" onclick="doCreate()">Create Entry</button>
+                        <button class="button" id="update-button" onclick="doUpdate()">Update Entry</button>
+                        <button onclick="cancel()" style="background-color: red; color: white">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="display">
+            <h2><b>Films</b></h2>
+            <button class="button" onclick="showCreate()">Create</button>
+            <table class="table" id="filmTable" style="background-color: white">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Year</th>
+                        <th>Genre</th>
+                        <th>Director</th>
+                        <th>Language</th>
+                        <th>Runtime</th>
+                        <th>IFCO</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="spacer"></div>
+        <div id="create-edit-series" style="display:none">
+            <h2>Create and Edit Database Entry</h2>
+            <table id="createUpdateForm-series">
+                <tr>
+                    <td>id</td>
+                    <td><input type="number" name="id" id="idInput" disabled=true></td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td><input type="text" name="Title"></td>
+                </tr>
+                <tr>
+                    <td>Started</td>
+                    <td><input type="number" name="Started"></td>
+                </tr>
+                <tr>  
+                    <td>Ended</td>
+                    <td><input type="text" name="Ended"></td>
+                </tr>
+                <tr>
+                    <td>Genre</td>
+                    <td><input type="text" name="Genre"></td>
+                </tr>
+                <tr>    
+                    <td>Language</td>
+                    <td><input type="text" name="Language"></td>
+                </tr>
+                <tr>    
+                    <td>Seasons</td>
+                    <td><input type="number" name="Seasons"></td>
+                </tr>
+                <tr>    
+                    <td>Episodes</td>
+                    <td><input type="number" name="Episodes"></td>
+                </tr>
+                <tr>    
+                    <td></td>
+                    <td>
+                        <button class="button" id="create-button-series" onclick="doCreateSeries()">Create Entry</button>
+                        <button class="button" id="update-button-series" onclick="doUpdateSeries()">Update Entry</button>
+                        <button onclick="cancel()" style="background-color: red; color: white">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="display-series">
+            <h2><b>Series</b></h2>
+            <button class="button" onclick="showCreateSeries()">Create</button>
+            <table class="table" id="seriesTable" style="background-color: white">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Started</th>
+                        <th>Ended</th>
+                        <th>Genre</th>
+                        <th>Language</th>
+                        <th>Seasons</th>
+                        <th>Episodes</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!--Footer-->
+        <div class="header">
+            Developer: Thomas Roux, G00376352
+        </div>
+    </body>
+    <!--Page functions-->
+    <script>
+        //Switch between form elements in create film form
+        function showCreate(){
+            document.getElementById("display").style.display = "none"
+            document.getElementById("create-edit").style.display = "block"
+            document.getElementById("update-button").style.display = "none"
+            document.getElementById("create-button").style.display = "block"
+        }
+
+        //Switch between form elements in create series form
+        function showCreateSeries(){
+            document.getElementById("display-series").style.display = "none"
+            document.getElementById("create-edit-series").style.display = "block"
+            document.getElementById("update-button-series").style.display = "none"
+            document.getElementById("create-button-series").style.display = "block"
+        }
+
+        //Cancel button function
+        function cancel(){
+            window.location.href = "/index.html";
+        }
+
+        //Reads film row for pre-populating film form for updating
+        function showUpdate(thisElement){
+            var rowElement = thisElement.parentNode.parentNode;
+            film = readFilmFromRow(rowElement)
+            populateForm(film)
+
+            document.getElementById("display").style.display = "none"
+            document.getElementById("create-edit").style.display = "block"
+            document.getElementById("update-button").style.display = "block"
+            document.getElementById("create-button").style.display = "none"
+        }
+
+        //Reads series row for pre-populating series form for updating
+        function showUpdateSeries(thisElement){
+            var rowElement = thisElement.parentNode.parentNode;
+            series = readSeriesFromRow(rowElement)
+            populateFormSeries(series)
+
+            document.getElementById("display-series").style.display = "none"
+            document.getElementById("create-edit-series").style.display = "block"
+            document.getElementById("update-button-series").style.display = "block"
+            document.getElementById("create-button-series").style.display = "none"
+        }
+
+        //Reads film entry as displayed in table
+        function readFilmFromRow(rowElement){
+            film = {}
+            film.id = rowElement.getAttribute("id")
+            film.Title = rowElement.cells[1].firstChild.textContent
+            film.Year = rowElement.cells[2].firstChild.textContent
+            film.Genre = rowElement.cells[3].firstChild.textContent
+            film.Director = rowElement.cells[4].firstChild.textContent
+            film.Language = rowElement.cells[5].firstChild.textContent
+            film.Runtime = rowElement.cells[6].firstChild.textContent
+            film.IFCO = rowElement.cells[7].firstChild.textContent
+
+            //console.log(film)
+            return film
+        }
+
+        //Reads series entry as displayed in table
+        function readSeriesFromRow(rowElement){
+            series = {}
+            series.id = rowElement.getAttribute("id")
+            series.Title = rowElement.cells[1].firstChild.textContent
+            series.Started = rowElement.cells[2].firstChild.textContent
+            series.Ended = rowElement.cells[3].firstChild.textContent
+            series.Genre = rowElement.cells[4].firstChild.textContent
+            series.Language = rowElement.cells[5].firstChild.textContent
+            series.Seasons = rowElement.cells[6].firstChild.textContent
+            series.Episodes = rowElement.cells[7].firstChild.textContent
+
+            //console.log(film)
+            return series
+        }
+
+        //Populates film form 
+        function populateForm(film){
+            var form = document.getElementById("createUpdateForm")
+            form.querySelector('input[name="id"]').value = film.id
+            //form.querySelector('input[name="id"]').disabled = true
+
+            form.querySelector('input[name="Title"]').value =  film.Title
+            form.querySelector('input[name="Year"]').value = film.Year 
+            form.querySelector('input[name="Genre"]').value = film.Genre
+            form.querySelector('input[name="Director"]').value = film.Director
+            form.querySelector('input[name="Language"]').value = film.Language
+            form.querySelector('input[name="Runtime"]').value = film.Runtime 
+            form.querySelector('input[name="IFCO"]').value = film.IFCO
+        }
+
+        //Populates series form 
+        function populateFormSeries(series){
+            var form = document.getElementById("createUpdateForm-series")
+            form.querySelector('input[name="id"]').value = series.id
+            //form.querySelector('input[name="id"]').disabled = true
+
+            form.querySelector('input[name="Title"]').value =  series.Title
+            form.querySelector('input[name="Started"]').value = series.Started 
+            form.querySelector('input[name="Ended"]').value = series.Ended
+            form.querySelector('input[name="Genre"]').value = series.Genre
+            form.querySelector('input[name="Language"]').value = series.Language
+            form.querySelector('input[name="Seasons"]').value = series.Seasons 
+            form.querySelector('input[name="Episodes"]').value = series.Episodes
+        }
+
+        //Clears film form after use
+        function clearForm(){
+            var form = document.getElementById("createUpdateForm")
+            form.querySelector('input[name="id"]').value = ''
+            //form.querySelector('input[name="id"]').disabled = false
+
+            form.querySelector('input[name="Title"]').value =  ''
+            form.querySelector('input[name="Year"]').value = '' 
+            form.querySelector('input[name="Genre"]').value = ''
+            form.querySelector('input[name="Director"]').value = ''
+            form.querySelector('input[name="Language"]').value = ''
+            form.querySelector('input[name="Runtime"]').value = ''
+            form.querySelector('input[name="IFCO"]').value = ''
+        }
+
+        //Clears series form after use
+        function clearFormSeries(){
+            var form = document.getElementById("createUpdateForm-series")
+            form.querySelector('input[name="id"]').value = ''
+            //form.querySelector('input[name="id"]').disabled = false
+
+            form.querySelector('input[name="Title"]').value =  ''
+            form.querySelector('input[name="Started"]').value = '' 
+            form.querySelector('input[name="Ended"]').value = ''
+            form.querySelector('input[name="Genre"]').value = ''
+            form.querySelector('input[name="Language"]').value = ''
+            form.querySelector('input[name="Seasons"]').value = ''
+            form.querySelector('input[name="Episodes"]').value = ''
+        }
+
+        //Ajax call to reate new film entry on database
+        function doCreate(){
+            film = getFilmFromForm()
+            console.log(film)
+            $.ajax({
+                url:'/films',
+                data:JSON.stringify(film),
+                method:'POST',
+                dataType:'JSON',
+                contentType: "application/json; charset=utf-8",
+                success:function(result){
+                    console.log(result)
+                    addFilmToTable(film)
+                    showDisplay()
+                    clearForm()
+                },
+                error:function(xhr, status, error){
+                    console.log("error "+ error)
+                }
+            })
+        }
+        
+        //Ajax call to create new series entry on database
+        function doCreateSeries(){
+            series = getSeriesFromForm()
+            console.log(series)
+            $.ajax({
+                url:'/series',
+                data:JSON.stringify(series),
+                method:'POST',
+                dataType:'JSON',
+                contentType: "application/json; charset=utf-8",
+                success:function(result){
+                    console.log(result)
+                    addSeriesToTable(series)
+                    showDisplaySeries()
+                    clearFormSeries()
+                },
+                error:function(xhr, status, error){
+                    console.log("error "+ error)
+                }
+            })
+        }
+        
+        //Updates film entry on server
+        function doUpdate(){
+            film = getFilmFromForm()
+            updateServer(film)
+        }
+        
+        //Updates series entry on server
+        function doUpdateSeries(){
+            series = getSeriesFromForm();
+            updateServerSeries(series);
+        }
+        
+        //Ajax call to update film on database
+        function updateServer(film){
+            $.ajax({
+                url:'/films/' + film.id,
+                data:JSON.stringify(film),
+                method:'PUT',
+                dataType:'JSON',
+                contentType: "application/json; charset=utf-8",
+                success:function(result){
+                    console.log(result)
+                    updateTableRow(film)
+                    showDisplay()
+                    clearForm()
+                },
+                error:function(xhr, status, error){
+                    console.log("error "+ error)
+                }
+            });
+        }
+        
+        //Ajax call to update series on database
+        function updateServerSeries(series){
+            $.ajax({
+                url:'/series/' + series.id,
+                data:JSON.stringify(series),
+                method:'PUT',
+                dataType:'JSON',
+                contentType: "application/json; charset=utf-8",
+                success:function(result){
+                    console.log(result)
+                    updateTableRowSeries(series)
+                    showDisplaySeries()
+                    clearFormSeries()
+                },
+                error:function(xhr, status, error){
+                    console.log("error "+ error)
+                }
+            });
+        }
+        
+        //Ajax call to delete film on database
+        function doDelete(thisElement){
+            var tableElement = document.getElementById("filmTable");
+            var rowElement = thisElement.parentNode.parentNode;
+            var index = rowElement.rowIndex;
+            id = rowElement.getAttribute("id");
+            console.log(id)
+            $.ajax({
+                url:"/films/"+id,
+                method:"DELETE",
+                dataType:"JSON",
+                success:function(result){
+                    tableElement.deleteRow(index);
+                },
+                error:function(xhr, status, error){
+                    console.log("error: " + error)
+                }
+            })
+        }
+        
+        //Ajax call to delete series on database
+        function doDeleteSeries(thisElement){
+            var tableElement = document.getElementById("seriesTable");
+            var rowElement = thisElement.parentNode.parentNode;
+            var index = rowElement.rowIndex;
+            id = rowElement.getAttribute("id");
+            console.log(id)
+            $.ajax({
+                url:"/series/"+id,
+                method:"DELETE",
+                dataType:"JSON",
+                success:function(result){
+                    tableElement.deleteRow(index);
+                },
+                error:function(xhr, status, error){
+                    console.log("error: " + error)
+                }
+            })
+        }
+        
+        //Updates film table row with latest form entry
+        function updateTableRow(film){
+            rowElement = document.getElementById(film.id)
+            rowElement.cells[0].firstChild.textContent = film.id
+            rowElement.cells[1].firstChild.textContent = film.Title
+            rowElement.cells[2].firstChild.textContent = film.Year
+            rowElement.cells[3].firstChild.textContent = film.Genre
+            rowElement.cells[4].firstChild.textContent = film.Director
+            rowElement.cells[5].firstChild.textContent = film.Language
+            rowElement.cells[6].firstChild.textContent = film.Runtime
+            rowElement.cells[7].firstChild.textContent = film.IFCO
+            //console.log("updating table")
+        }
+        
+        //Updates series table row with latest form entry
+        function updateTableRowSeries(series){
+            rowElement = document.getElementById(series.id)
+            rowElement.cells[0].firstChild.textContent = series.id
+            rowElement.cells[1].firstChild.textContent = series.Title
+            rowElement.cells[2].firstChild.textContent = series.Started
+            rowElement.cells[3].firstChild.textContent = series.Ended
+            rowElement.cells[4].firstChild.textContent = series.Genre
+            rowElement.cells[5].firstChild.textContent = series.Language
+            rowElement.cells[6].firstChild.textContent = series.Seasons
+            rowElement.cells[7].firstChild.textContent = series.Episodes
+            //console.log("updating table")
+        }
+        
+        //Gets film details from form
+        function getFilmFromForm(){
+            var form = document.getElementById("createUpdateForm")
+            var film = {}
+            film.id = form.querySelector('input[name="id"]').value
+            film.Title = form.querySelector('input[name="Title"]').value
+            film.Year = form.querySelector('input[name="Year"]').value
+            film.Genre = form.querySelector('input[name="Genre"]').value
+            film.Director = form.querySelector('input[name="Director"]').value
+            film.Language = form.querySelector('input[name="Language"]').value
+            film.Runtime = form.querySelector('input[name="Runtime"]').value
+            film.IFCO = form.querySelector('input[name="IFCO"]').value
+            //console.log(film)
+            return film
+        }
+
+        //Gets series details from form
+        function getSeriesFromForm(){
+            var form = document.getElementById("createUpdateForm-series");
+            var series = {};
+            series.id = form.querySelector('input[name="id"]').value;
+            series.Title = form.querySelector('input[name="Title"]').value;
+            series.Started = form.querySelector('input[name="Started"]').value;
+            series.Ended = form.querySelector('input[name="Ended"]').value;
+            series.Genre = form.querySelector('input[name="Genre"]').value;
+            series.Language = form.querySelector('input[name="Language"]').value;
+            series.Seasons = form.querySelector('input[name="Seasons"]').value;
+            series.Episodes = form.querySelector('input[name="Episodes"]').value;
+            //console.log(series)
+            return series;
+        }
+
+        //Switches between film form and table on webpage
+        function showDisplay(){
+            document.getElementById("display").style.display = "block"
+            document.getElementById("create-edit").style.display = "none"
+        }
+
+        //Switches between series form and table on webpage
+        function showDisplaySeries(){
+            document.getElementById("display-series").style.display = "block"
+            document.getElementById("create-edit-series").style.display = "none"
+        }
+
+        //Ajax call to get all film details from server
+        function populateTable(){
+            //ajax call to server to get all films
+            $.ajax({
+                url:'http://127.0.0.1:5000/films',
+                method:'GET',
+                dataType:'JSON',
+                success:function(result){
+                    for (film of result){
+                        addFilmToTable(film);
+                    }
+                },
+                error:function(xhr, status, error){
+                    console.log("error " + error + " code:" + status)
+                }
+            })
+        }
+
+        //Ajax call to get all series details from server
+        function populateTableSeries(){
+            //ajax call to server to get all films
+            $.ajax({
+                url:'http://127.0.0.1:5000/series',
+                method:'GET',
+                dataType:'JSON',
+                success:function(result){
+                    for (series of result){
+                        addSeriesToTable(series);
+                    }
+                },
+                error:function(xhr, status, error){
+                    console.log("error " + error + " code:" + status)
+                }
+            })
+        }
+
+        //Adds details of film to table
+        function addFilmToTable(film){
+            //console.log("working so far")
+            tableElement = document.getElementById("filmTable")
+            rowElement = tableElement.insertRow(-1)
+            rowElement.setAttribute("id", film.id)
+            cell1 = rowElement.insertCell(0)
+            cell1.innerHTML = film.id
+            cell2 = rowElement.insertCell(1)
+            cell2.innerHTML = film.Title
+            cell3 = rowElement.insertCell(2)
+            cell3.innerHTML = film.Year
+            cell4 = rowElement.insertCell(3)
+            cell4.innerHTML = film.Genre
+            cell5 = rowElement.insertCell(4)
+            cell5.innerHTML = film.Director
+            cell6 = rowElement.insertCell(5)
+            cell6.innerHTML = film.Language
+            cell7 = rowElement.insertCell(6)
+            cell7.innerHTML = film.Runtime
+            cell8 = rowElement.insertCell(7)
+            cell8.innerHTML = film.IFCO
+            cell9 = rowElement.insertCell(8)
+            cell9.innerHTML = '<button class="button" onclick="showUpdate(this)">Update</button>'
+            cell10 = rowElement.insertCell(9)
+            cell10.innerHTML = '<button class="button" onclick="doDelete(this)">Delete</button>'
+        }
+        populateTable()
+
+        //Adds details of series to table
+        function addSeriesToTable(series){
+            //console.log("working so far")
+            tableElement = document.getElementById("seriesTable")
+            rowElement = tableElement.insertRow(-1)
+            rowElement.setAttribute("id", series.id)
+            cell1 = rowElement.insertCell(0)
+            cell1.innerHTML = series.id
+            cell2 = rowElement.insertCell(1)
+            cell2.innerHTML = series.Title
+            cell3 = rowElement.insertCell(2)
+            cell3.innerHTML = series.Started
+            cell4 = rowElement.insertCell(3)
+            cell4.innerHTML = series.Ended
+            cell5 = rowElement.insertCell(4)
+            cell5.innerHTML = series.Genre
+            cell6 = rowElement.insertCell(5)
+            cell6.innerHTML = series.Language
+            cell7 = rowElement.insertCell(6)
+            cell7.innerHTML = series.Seasons
+            cell8 = rowElement.insertCell(7)
+            cell8.innerHTML = series.Episodes
+            cell9 = rowElement.insertCell(8)
+            cell9.innerHTML = '<button class="button" onclick="showUpdateSeries(this)">Update</button>'
+            cell10 = rowElement.insertCell(9)
+            cell10.innerHTML = '<button class="button" onclick="doDeleteSeries(this)">Delete</button>'
+        }
+        populateTableSeries()
+    </script>
+</html>
